@@ -1,0 +1,127 @@
+create database internship1003;
+use internship1003;
+select * from sales_purchase_data;
+
+
+select * from sales_purchase_data limit 10;
+drop table if exists sales_purchase_data_updated;
+create TABLE sales_purchase_data_updated AS
+SELECT
+    Row_ID,
+    Order_ID,
+    STR_TO_DATE(Order_Date, '%d-%m-%Y') AS Order_Date,
+    STR_TO_DATE(Ship_Date, '%d-%m-%Y') AS Ship_Date,
+    Ship_Mode,
+    Customer_ID,
+    Customer_Name,
+    Segment,
+    Country,
+    City,
+    State,
+    Region
+FROM sales_purchase_data;
+select * from sales_purchase_data_updated limit 10
+desc sales_purchase_data_updated
+
+select 
+order_date,
+month (order_date) as month,
+year (order_date)  as year,
+day ( order_date) as day 
+from sales_purchase_data_updated limit 5 ;
+
+1) SELECT SUBSTRING(order_id, 5, 14) AS order_id FROM sales_purchase_data_updated;
+
+
+ 2)select 
+order_date,
+month (order_date) as order_month,
+year (order_date)  as order_year
+from sales_purchase_data_updated ;
+
+select 
+Order_date,
+month(Order_Date) as order_date,
+year(order_Date) as order_month
+from sales_purchase_data_updated;
+
+3)SELECT SUBSTRING(Customer_id, 3, 6) AS Customer_id FROM sales_purchase_data_updated;
+
+4)select concat( Region, '', Country, '', City, '', State, '') AS location_info FROM sales_purchase_data_updated;
+
+select* from sales_purchase_data limit 10
+
+5)ALTER TABLE sales_purchase_data ADD COLUMN super_type VARCHAR(255);
+ALTER TABLE sales_purchase_data ADD COLUMN Loss DECIMAL(10,2);
+select* from sales_purchase_data limit 10
+
+drop table if exists Sales_order_info;
+
+create TABLE Sales_order_info AS
+SELECT
+Product_ID,
+Category,
+Sub_Category,
+Product_Name,
+Sales, 
+Quantity,
+Sales/quantity AS per_quantity_price,
+super_type,
+Discount,
+Profit,
+Loss
+FROM sales_purchase_data;
+select * from  Sales_order_info limit 10
+
+
+5a)SELECT SUBSTRING(Product_Id, 7, 14) AS Product_Id FROM Sales_order_info ;
+
+5b)SELECT
+    Product_ID,
+    Category,
+    Sub_Category,
+    Product_Name,
+    Sales,
+    Quantity,
+    Sales / Quantity AS per_quantity_price,
+    CASE
+        WHEN Sales > 1000 THEN 'Super'
+        WHEN Sales > 400 THEN 'Average'
+        ELSE 'Low'
+    END AS sales_type,
+    Discount,
+    Profit,
+     CASE
+        WHEN Profit < 0 THEN 1
+        ELSE 0
+    END AS Loss
+    from Sales_order_info
+
+6)SELECT COUNT(DISTINCT order_id) 
+FROM sales_purchase_data_updated;
+
+7)SELECT COUNT(DISTINCT Product_Name) 
+FROM sales_order_info;
+
+8)SELECT COUNT(DISTINCT Segment) 
+FROM sales_purchase_data_updated;
+
+9)SELECT MAX(Order_Date) 
+FROM sales_purchase_data_updated;
+
+10)SELECT MIN(Order_Date) 
+FROM sales_purchase_data_updated;
+
+11)SELECT *
+FROM sales_purchase_data_updated
+WHERE Order_Date = (SELECT MAX(Order_Date) FROM sales_purchase_data_updated);
+
+SELECT COUNT(DISTINCT Customer_id) 
+FROM sales_purchase_data
+WHERE State IN ('Texas', 'New York');
+
+
+12)SELECT
+    COUNT(DISTINCT CASE WHEN state = 'Texas' THEN customer_id END) AS No_of_cust_texas,
+    COUNT(DISTINCT CASE WHEN state = 'New York' THEN customer_id END) AS No_of_cust_New_york
+FROM sales_purchase_data_updated;
